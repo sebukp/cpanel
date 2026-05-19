@@ -1,5 +1,5 @@
-echo "Installing PHP 8.4 and 8.5"
-yum install alt-php85 alt-php84 -y
+echo "Installing PHP 8.3, 8.4 and 8.5"
+yum install alt-php83 alt-php84 alt-php85 -y
 
 echo "Changing PHP hanlder to LSAPI"
 whmapi1 php_set_handler version=alt-php83 handler=lsapi
@@ -7,7 +7,7 @@ whmapi1 php_set_handler version=alt-php84 handler=lsapi
 whmapi1 php_set_handler version=alt-php85 handler=lsapi
 
 echo "Updating configurations"
-for v in 84 85; do
+for v in 83 84 85; do
     TARGET_INI="/opt/alt/php${v}/etc/php.ini"
     
     if [ -f "$TARGET_INI" ]; then
@@ -30,6 +30,9 @@ done
 echo "Syncing changes to CageFS and restarting PHP-FPM..."
 cagefsctl --force-update
 /usr/local/cpanel/scripts/restartsrv_apache_php_fpm
+
+echo "PHP 8.3"
+grep -E "allow_url_fopen|max_execution_time|max_input_time|max_input_vars|memory_limit|post_max_size|upload_max_filesize|disable_functions" /opt/alt/php83/etc/php.ini
 
 echo "PHP 8.4"
 grep -E "allow_url_fopen|max_execution_time|max_input_time|max_input_vars|memory_limit|post_max_size|upload_max_filesize|disable_functions" /opt/alt/php84/etc/php.ini
