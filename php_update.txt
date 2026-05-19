@@ -1,0 +1,37 @@
+echo "Installing PHP 8.4 and 8.5"
+yum install alt-php85 alt-php84
+
+echo "Changing PHP hanlder to LSAPI"
+whmapi1 php_set_handler version=ea-php84 handler=lsapi
+whmapi1 php_set_handler version=ea-php85 handler=lsapi
+
+echo "Updating configurations"
+for v in 84 85; do
+    TARGET_INI="/opt/alt/php${v}/etc/php.ini"
+    
+    if [ -f "$TARGET_INI" ]; then
+        echo "Updating configuration for alt-php Version 8.${v:1:1}..."
+        
+        sed -i 's/^allow_url_fopen =.*/allow_url_fopen = Off/' $TARGET_INI
+        sed -i 's/^max_execution_time =.*/max_execution_time = 90/' $TARGET_INI
+        sed -i 's/^max_input_time =.*/max_input_time = 90/' $TARGET_INI
+        sed -i 's/^max_input_vars =.*/max_input_vars = 10000/' $TARGET_INI
+        sed -i 's/^memory_limit =.*/memory_limit = 256M/' $TARGET_INI
+        sed -i 's/^post_max_size =.*/post_max_size = 256M/' $TARGET_INI
+        sed -i 's/^upload_max_filesize =.*/upload_max_filesize = 256M/' $TARGET_INI
+        sed -i 's/^disable_functions =.*/disable_functions = "show_source, system, shell_exec, passthru, exec, popen, proc_open"/' $TARGET_INI
+    else
+        echo "Skipping 8.${v:1:1} - alt-php${v} is not installed on this server."
+    fi
+done
+
+# Apply updates to the server environment
+echo "Syncing changes to CageFS and restarting PHP-FPM..."
+cagefsctl --force-update
+/usr/local/cpanel/scripts/restartsrv_apache_php_fpm
+
+echo "PHP 8.4"
+grep -E "allow_url_fopen|max_execution_time|max_input_time|max_input_vars|memory_limit|post_max_size|upload_max_filesize|disable_functions" /opt/alt/php84/etc/php.ini
+
+echo "PHP 8.5"
+grep -E "allow_url_fopen|max_execution_time|max_input_time|max_input_vars|memory_limit|post_max_size|upload_max_filesize|disable_functions" /opt/alt/php85/etc/php.ini
