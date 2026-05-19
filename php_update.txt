@@ -1,5 +1,5 @@
 echo "Installing PHP 8.4 and 8.5"
-yum install alt-php85 alt-php84
+yum install alt-php85 alt-php84 -y
 
 echo "Changing PHP hanlder to LSAPI"
 whmapi1 php_set_handler version=ea-php84 handler=lsapi
