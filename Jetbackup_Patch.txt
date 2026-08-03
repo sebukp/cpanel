@@ -1,0 +1,11 @@
+wget https://github.com/sebukp/cpanel/blob/main/Domain.inc
+
+cp -a /usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc /usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc.bak
+
+\cp /root/Domain.inc /usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc
+ls -l /usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc*
+
+chown --reference=/usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc.bak /usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc
+chmod --reference=/usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc.bak /usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc
+
+ls -l /usr/local/jetapps/var/lib/jetbackup5/Panel/Account/Domain.inc*
